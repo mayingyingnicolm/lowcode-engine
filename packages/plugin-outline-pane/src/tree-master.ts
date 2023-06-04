@@ -1,8 +1,9 @@
 import { computed, makeObservable, obx } from '@alilc/lowcode-editor-core';
-import { Designer, isLocationChildrenDetail } from '@alilc/lowcode-designer';
+import { Designer, isLocationChildrenDetail, isPageSchema } from '@alilc/lowcode-designer';
 import TreeNode from './tree-node';
 import { Tree } from './tree';
 import { Backup } from './views/backup-pane';
+import { Schema } from 'inspector';
 
 export interface ITreeBoard {
   readonly visible: boolean;
@@ -12,7 +13,6 @@ export interface ITreeBoard {
 
 export class TreeMaster {
   readonly designer: Designer;
-
   constructor(designer: Designer) {
     makeObservable(this);
     this.designer = designer;
@@ -61,6 +61,24 @@ export class TreeMaster {
     designer.editor.on('designer.document.remove', ({ id }) => {
       this.treeMap.delete(id);
     });
+    let name = window.localStorage.getItem('name');
+    let json = window.localStorage.getItem('json');
+    console.log(name + ' ' + json);
+
+    fetch('/noone/ul/system/ctrl/ComponentController/detail.uli?name=' + name + '&json=' + encodeURIComponent(json != null ? json : ''), { method: 'GET', mode: 'cors' })
+      .then(res => { return res.json(); })
+      .then(json => {
+        console.log('获取的结果', json.data);
+        const doc1 = this.designer?.currentDocument;
+        let schema = JSON.parse(json.data.schema);
+        console.log('schema');
+        console.log(schema);
+        if (this.designer.project.documents.length <= 1) {
+          this.designer.project.createDocument(schema);
+          console.log(this.designer.project.documents);
+        }
+
+      });
   }
 
   private toVision() {
@@ -91,7 +109,7 @@ export class TreeMaster {
     return false;
   }
 
-  purge() {
+  async purge() {
     // todo others purge
   }
 
@@ -109,6 +127,23 @@ export class TreeMaster {
       return tree;
     }
     return null;
+  }
+
+  @computed get myTree(): Tree | null {
+
+      const doc = this.designer.project.documents[1];
+      console.log('1111');
+      console.log(doc);
+      if (doc) {
+        const { id } = doc;
+        if (this.treeMap.has(id)) {
+          return this.treeMap.get(id)!;
+        }
+        const tree = new Tree(doc);
+        this.treeMap.set(id, tree);
+        return tree;
+      }
+      return null;
   }
 }
 

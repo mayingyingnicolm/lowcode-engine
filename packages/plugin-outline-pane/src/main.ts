@@ -37,6 +37,9 @@ export class OutlineMain implements ISensor, ITreeBoard, IScrollable {
   @computed get currentTree() {
     return this._master?.currentTree;
   }
+  @computed get myTree() {
+    return this._master?.myTree;
+  }
 
   readonly id = uniqueId('outline');
 

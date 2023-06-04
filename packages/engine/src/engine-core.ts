@@ -13,7 +13,7 @@ import {
   registerDefaults,
 } from '@alilc/lowcode-editor-skeleton';
 
-import Outline, { OutlineBackupPane, getTreeMaster } from '@alilc/lowcode-plugin-outline-pane';
+import Outline, { OutlineBackupPane, MyPane, getTreeMaster } from '@alilc/lowcode-plugin-outline-pane';
 import DesignerPlugin from '@alilc/lowcode-plugin-designer';
 import { Hotkey, Project, Skeleton, Setters, Material, Event } from '@alilc/lowcode-shell';
 import { getLogger, isPlainObject } from '@alilc/lowcode-utils';
@@ -22,6 +22,7 @@ import utils from './modules/utils';
 import * as editorCabin from './modules/editor-cabin';
 import getSkeletonCabin from './modules/skeleton-cabin';
 import getDesignerCabin from './modules/designer-cabin';
+import { IconEye } from '../../plugin-outline-pane/src/icons/eye';
 
 export * from './modules/editor-types';
 export * from './modules/skeleton-types';
@@ -167,6 +168,21 @@ export {
             },
           },
           content: OutlineBackupPane,
+        });
+        skeleton.add({
+          area: 'leftArea',
+          name: 'outlinePane',
+          type: 'PanelDock',
+          content: MyPane,
+          panelProps: {
+            area: isInFloatArea ? 'leftFloatArea' : 'leftFixedArea',
+            keepVisibleWhileDragging: true,
+            ...engineConfig.get('defaultOutlinePaneProps'),
+          },
+          props: {
+            icon: IconEye,
+            description: '自定义组件库',
+          },
         });
       },
     };

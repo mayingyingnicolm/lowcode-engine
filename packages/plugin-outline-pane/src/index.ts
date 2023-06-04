@@ -1,4 +1,5 @@
 import { OutlinePane } from './views/pane';
+import { MyPane } from './views/mypane';
 import { OutlineBackupPane } from './views/backup-pane';
 import { IconOutline } from './icons/outline';
 import { intlNode } from './locale';
@@ -13,4 +14,4 @@ export default {
   content: OutlinePane,
 };
 
-export { OutlinePane, OutlineBackupPane, getTreeMaster };
+export { OutlinePane, OutlineBackupPane, MyPane, getTreeMaster };
